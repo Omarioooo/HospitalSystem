@@ -64,8 +64,8 @@ SELECT
         FROM Patient_Room
         WHERE Patient_Room.RoomID IN (
             SELECT RoomID
-            FROM Room_Dep
-            WHERE Room_Dep.depID = dep.depID
+            FROM Room
+            WHERE Room.depID = dep.depID
         )
     ) AS num_Of_Patients -- select the number of patients on each department depending on the total patient into each room in the department
 FROM
@@ -141,7 +141,7 @@ RIGHT JOIN
   Room_Nurse rn
 ON
   n.NurseID = rn.NurseID
-RIGHT JOIN
+JOIN
   Room r
 ON
   rn.RoomID = r.RoomID
@@ -372,9 +372,46 @@ BEGIN
     -- Check if the patient exists before deleting
     IF EXISTS (SELECT 1 FROM Patient WHERE patientID = @patientID)
     BEGIN
+        -- Declare needed variables
+        DECLARE @current_count INT;
+        DECLARE @room_capacity INT;
+        DECLARE @RoomId INT;
+
         -- Delete related records
-        DELETE FROM Patient_Room WHERE patientID = @patientID;
-        DELETE FROM Appointment_Patient_Doc WHERE patientID = @patientID;
+        -- delete from room if exists
+        IF EXISTS (SELECT 1 FROM Patient_Room WHERE patientID = @patientID)
+        BEGIN
+           -- get the room id
+           SELECT @RoomID = roomID
+           FROM Patient_Room
+           WHERE patientID = @patientID
+
+           -- Get the current count of patients in the room
+           SELECT @current_count = COUNT(*)
+           FROM Patient_Room
+           WHERE RoomID = @RoomID;
+
+           -- Get the room's capacity
+           SELECT @room_capacity = capacity
+           FROM Room
+           WHERE RoomID = @RoomID;
+
+           IF @current_count < @room_capacity
+           BEGIN
+              -- Make the room available
+              UPDATE Room
+              SET Availability = 'AVAILABLE'
+              WHERE RoomID = @RoomID;
+           END
+
+           -- Remove the patient from the room
+           DELETE FROM Patient_Room WHERE patientID = @patientID;
+        END
+        -- delete the appointment if canceled an appointment
+        ELSE
+        BEGIN
+            DELETE FROM Appointment_Patient_Doc WHERE patientID = @patientID;
+        END
 
         -- Delete the patient
         DELETE FROM Patient WHERE patientID = @patientID;
