@@ -1,4 +1,4 @@
-  -- A stored Procedure for Adding patinent into the room
+  -- A stored Procedure for Adding patient into the room
 CREATE PROCEDURE insertPatientIntoRoom
     @patientID INT, 
     @FirstName VARCHAR(50), 
@@ -89,14 +89,10 @@ SELECT
     r.Availability
 FROM
     Room r
-RIGHT JOIN
-    Room_Dep rd
-ON
-    r.RoomID = rd.RoomID
 JOIN
     Department dep
 ON
-    rd.DepID = dep.DepID
+    r.DepID = dep.DepID
 LEFT JOIN
     Patient_Room pr
 ON
@@ -146,13 +142,13 @@ RIGHT JOIN
 ON
   n.NurseID = rn.NurseID
 RIGHT JOIN
-  Room_Dep rd
+  Room r
 ON
-  rn.RoomID = rd.RoomID
+  rn.RoomID = r.RoomID
 JOIN
   Department dep
 ON
-  dep.DepID = rd.DepID
+  dep.DepID = r.DepID
 JOIN
   Doctor doc
 ON
@@ -268,8 +264,8 @@ BEGIN
         SELECT
             @Department = dep.DepName
         FROM Department dep
-        JOIN Room_Dep rd ON dep.DepID = rd.DepID
-        WHERE rd.RoomID = @RoomID;
+        JOIN Room r ON dep.DepID = r.DepID
+        WHERE r.RoomID = @RoomID;
 
         -- Calculate the remaining time
         SELECT

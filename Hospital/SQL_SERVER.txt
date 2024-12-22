@@ -1,3 +1,0 @@
-URL=jdbc:sqlserver://localhost:1433;databaseName=hospital_system;encrypt=true;trustServerCertificate=true
-USER=sa
-PASSWORD=1234

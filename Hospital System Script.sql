@@ -73,7 +73,8 @@ CREATE TABLE Room (
     RoomID INT PRIMARY KEY,
     Capacity INT CHECK (Capacity BETWEEN 1 AND 4),
     Type VARCHAR(50),
-    Availability VARCHAR(20) Check (Availability in ('Available', 'Not Available')) DEFAULT 'Available'
+    Availability VARCHAR(20) Check (Availability in ('Available', 'Not Available')) DEFAULT 'Available',
+    DepID INT  NOT NULL
 );
 
 -- Create the Patient_Room table
@@ -101,12 +102,6 @@ CREATE TABLE Room_Nurse (
 	PRIMARY KEY (RoomID, NurseID)
 );
 
--- Create the Room_Dep table
-CREATE TABLE Room_Dep (
-    RoomID INT,
-    DepID INT,
-    PRIMARY KEY (RoomID, DepID)
-);
 
 -- Create the Appointment table
 CREATE TABLE Appointment (
@@ -155,9 +150,8 @@ ADD FOREIGN KEY (patientID) REFERENCES Patient(patientID),
     FOREIGN KEY (RoomID) REFERENCES Room(RoomID);
 
 -- Add foreign key constraints for Room_Dep table
-ALTER TABLE Room_Dep
-ADD FOREIGN KEY (RoomID) REFERENCES Room(RoomID),
-    FOREIGN KEY (DepID) REFERENCES Department(DepID);
+ALTER TABLE Room
+ADD FOREIGN KEY (DepID) REFERENCES Department(DepID);
 
 -- Add foreign key constraints for Appointment table
 ALTER TABLE Appointment
@@ -172,3 +166,4 @@ ADD FOREIGN KEY (AppoID) REFERENCES Appointment(AppoID),
 ALTER TABLE Room_Nurse
 ADD FOREIGN KEY (RoomID) REFERENCES Room(RoomID),
     FOREIGN KEY (NurseID) REFERENCES Nurse(NurseID);
+
