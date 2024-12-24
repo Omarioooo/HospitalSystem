@@ -161,8 +161,10 @@ ADD FOREIGN KEY (ClinicID) REFERENCES Clinic(ClinicID);
 ALTER TABLE Appointment_Patient_Doc
 ADD FOREIGN KEY (AppoID) REFERENCES Appointment(AppoID),
     FOREIGN KEY (patientID) REFERENCES Patient(patientID),
-    FOREIGN KEY (DocID) REFERENCES Doctor(DocID);
+    FOREIGN KEY (DocID) REFERENCES Doctor(DocID)
+    FOREIGN KEY (Clinic_ID) REFERENCES Clinic(ClinicID);
 
+-- Add foreign key constraints for Room_Nurse table
 ALTER TABLE Room_Nurse
 ADD FOREIGN KEY (RoomID) REFERENCES Room(RoomID),
     FOREIGN KEY (NurseID) REFERENCES Nurse(NurseID);

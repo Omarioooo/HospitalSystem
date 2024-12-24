@@ -50,11 +50,11 @@ BEGIN
 			SET availability = 'NOT AVAILABLE'
 			WHERE RoomID = @RoomID;
 		END
-   COMMIT TRANSACTION
+        COMMIT TRANSACTION
    END TRY
 
    BEGIN CATCH
-   ROLLBACK TRANSACTION
+        ROLLBACK TRANSACTION
    END CATCH
 END;
 -----------------------------------------------------------------------------------------------------------------------
@@ -66,7 +66,6 @@ SELECT
     dep.depID,
     dep.depName,
     dep.MangerID,
-    doc.DocID,
 	MangerName = doc.FirstName +' '+ doc.SecondName,
     (
         SELECT COUNT(Patient_Room.patientID)
@@ -203,13 +202,13 @@ BEGIN
       INSERT INTO Appointment VALUES
       (@Appointment_ID, @status, @clinicID)
 
-      INSERT INTO Appointment_Patient_Doc(AppoID, patientID, DocID, Cost) VALUES
-      (@Appointment_ID, @patientID, @docID, @cost)
-  COMMIT TRANSACTION;
+      INSERT INTO Appointment_Patient_Doc(AppoID, patientID, DocID, Cost, Clinic_ID) VALUES
+      (@Appointment_ID, @patientID, @docID, @cost, @ClinicID)
+      COMMIT TRANSACTION;
   END TRY
 
   BEGIN CATCH
-  ROLLBACK TRANSACTION
+      ROLLBACK TRANSACTION
   END CATCH
 END;
 -------------------------------------------------------------------------------------------------------------------
@@ -315,6 +314,8 @@ CREATE PROCEDURE search_on_clinics
     @StartingDate DATE OUTPUT
 AS
 BEGIN
+   DECLARE @ClinicID INT
+
    BEGIN TRANSACTION;
    BEGIN TRY
 		-- Select patient data
@@ -330,11 +331,17 @@ BEGIN
 
 		-- Select the appointment data
 		SELECT
-			@AppointmentID = AppoID,
-			@Clinic = Clinic_Name,
-			@StartingDate = Date
-		FROM Appointment_Patient_Doc
-		WHERE PatientID = @PatientID;
+			@AppointmentID = a.AppoID,
+			@Clinic = c.Name,
+			@StartingDate = a.Date
+		FROM
+		    Appointment_Patient_Doc a
+		JOIN
+		    Clinic c
+		ON
+		   c.ClinicID = a.Clinic_ID
+		WHERE
+		    PatientID = @PatientID;
 
 		  -- commit if every thing successes
 		COMMIT TRANSACTION;
