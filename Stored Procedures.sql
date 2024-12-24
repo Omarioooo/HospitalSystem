@@ -1,4 +1,4 @@
-  -- A stored Procedure for Adding patient into the room
+ -- A stored Procedure for Adding patient into the room
 CREATE PROCEDURE insertPatientIntoRoom
     @patientID INT, 
     @FirstName VARCHAR(50), 
@@ -31,22 +31,31 @@ BEGIN
         RETURN; -- Exit the stored procedure without inserting
     END
 
-    -- Insert into the Patient table
-    INSERT INTO Patient (PatientID, FirstName, SecondName, ThirdName, Gender, Phone, City)
-    VALUES (@patientID, @FirstName, @SecondName, @ThirdName, @Gender, @Phone, @City);
+	BEGIN TRANSACTION
 
-    -- Insert into the Patient_Room table
-    INSERT INTO Patient_Room (PatientID, RoomID, StayingTime)
-    VALUES (@patientID, @RoomID, @StayingTime);
+	BEGIN TRY
+		-- Insert into the Patient table
+		INSERT INTO Patient (PatientID, FirstName, SecondName, ThirdName, Gender, Phone, City)
+		VALUES (@patientID, @FirstName, @SecondName, @ThirdName, @Gender, @Phone, @City);
 
-    -- Check if room has become full after the insertion
-    IF @current_count + 1 = @room_capacity
-    BEGIN
-        -- Update room availability to 'NOT AVAILABLE'
-        UPDATE Room
-        SET availability = 'NOT AVAILABLE'
-        WHERE RoomID = @RoomID;
-    END
+		-- Insert into the Patient_Room table
+		INSERT INTO Patient_Room (PatientID, RoomID, StayingTime)
+		VALUES (@patientID, @RoomID, @StayingTime);
+
+		-- Check if room has become full after the insertion
+		IF @current_count + 1 = @room_capacity
+		BEGIN
+			-- Update room availability to 'NOT AVAILABLE'
+			UPDATE Room
+			SET availability = 'NOT AVAILABLE'
+			WHERE RoomID = @RoomID;
+		END
+   COMMIT TRANSACTION
+   END TRY
+
+   BEGIN CATCH
+   ROLLBACK TRANSACTION
+   END CATCH
 END;
 -----------------------------------------------------------------------------------------------------------------------
 -- A stored procedure that display the departments data into the hospital
@@ -174,24 +183,34 @@ BEGIN
   DECLARE @clinicID INT
   DECLARE @docID INT
 
-   -- Get the needed info from the clinic name
-  SELECT
-      @docID = DocID, @clinicID = ClinicID
-  FROM
-      Clinic
-  WHERE
-      Name = @Clinic_name
+  BEGIN TRANSACTION
 
-   -- Insert data in the tables related to the booking the appointment
-  INSERT INTO Patient (PatientID, FirstName, SecondName, ThirdName, Gender, Phone, City) VALUES
-   (@patientID, @FirstName, @SecondName, @ThirdName, @Gender, @Phone, @City);
+  BEGIN TRY
+       -- Get the needed info from the clinic name
+      SELECT
+          @docID = DocID,
+          @clinicID = ClinicID
+      FROM
+          Clinic
+      WHERE
+          Name = @Clinic_name
+
+       -- Insert data in the tables related to the booking the appointment
+      INSERT INTO Patient (PatientID, FirstName, SecondName, ThirdName, Gender, Phone, City) VALUES
+       (@patientID, @FirstName, @SecondName, @ThirdName, @Gender, @Phone, @City);
 
 
-  INSERT INTO Appointment VALUES
-  (@Appointment_ID, @status, @clinicID)
+      INSERT INTO Appointment VALUES
+      (@Appointment_ID, @status, @clinicID)
 
-  INSERT INTO Appointment_Patient_Doc(AppoID, patientID, DocID, Cost) VALUES
-  (@Appointment_ID, @patientID, @docID, @cost)
+      INSERT INTO Appointment_Patient_Doc(AppoID, patientID, DocID, Cost) VALUES
+      (@Appointment_ID, @patientID, @docID, @cost)
+  COMMIT TRANSACTION;
+  END TRY
+
+  BEGIN CATCH
+  ROLLBACK TRANSACTION
+  END CATCH
 END;
 -------------------------------------------------------------------------------------------------------------------
 -- A stored procedure decide where to search for the patient (Room or Clinic)
