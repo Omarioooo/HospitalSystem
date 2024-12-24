@@ -112,12 +112,12 @@ CREATE TABLE Appointment (
 
 -- Create the Appointment_Patient_Doc table
 CREATE TABLE Appointment_Patient_Doc (
-    AppoID INT,
+    AppoID INT PRIMARY KEY,
     patientID INT,
     DocID INT,
     Date DATE,
     Cost DECIMAL(10, 2),
-    PRIMARY KEY (AppoID, patientID, DocID)
+    Clinic_ID INT
 );
 
 -- Alter to add foreign key constraints
