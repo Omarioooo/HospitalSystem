@@ -333,6 +333,7 @@ BEGIN
 		SELECT
 			@AppointmentID = a.AppoID,
 			@Clinic = c.Name,
+			@Department = dep.DepName,
 			@StartingDate = a.Date
 		FROM
 		    Appointment_Patient_Doc a
@@ -340,6 +341,14 @@ BEGIN
 		    Clinic c
 		ON
 		   c.ClinicID = a.Clinic_ID
+        JOIN
+		   Doc_Dep dd
+        ON
+		   a.DocID = dd.DepID
+        JOIN
+		   Department dep
+        ON
+           dd.DepID = dep.DepID
 		WHERE
 		    PatientID = @PatientID;
 
