@@ -115,9 +115,9 @@ AS
 BEGIN
 SELECT
     c.ClinicID,
-	c.Name 'Clinic',
-	dep.DepName 'Department',
-	doc.FirstName+' '+doc.SecondName 'Doctor'
+    c.Name 'Clinic',
+    dep.DepName 'Department',
+    doc.FirstName+' '+doc.SecondName 'Doctor'
 FROM
    Clinic c
 LEFT JOIN
