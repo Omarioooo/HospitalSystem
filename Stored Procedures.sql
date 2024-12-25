@@ -431,7 +431,7 @@ BEGIN
            FROM Room
            WHERE RoomID = @RoomID;
 
-           IF @current_count < @room_capacity
+           IF @current_count <= @room_capacity
            BEGIN
               -- Make the room available
               UPDATE Room
