@@ -410,53 +410,54 @@ BEGIN
         -- Declare needed variables
         DECLARE @current_count INT;
         DECLARE @room_capacity INT;
-        DECLARE @RoomId INT;
+        DECLARE @RoomID INT;
 
         -- Delete related records
-        -- delete from room if exists
+        -- Delete from room if the patient is assigned to a room
         IF EXISTS (SELECT 1 FROM Patient_Room WHERE patientID = @patientID)
         BEGIN
-           -- get the room id
-           SELECT @RoomID = roomID
-           FROM Patient_Room
-           WHERE patientID = @patientID
+            -- Get the room id
+            SELECT @RoomID = roomID
+            FROM Patient_Room
+            WHERE patientID = @patientID;
 
-           -- Get the current count of patients in the room
-           SELECT @current_count = COUNT(*)
-           FROM Patient_Room
-           WHERE RoomID = @RoomID;
+            -- Get the current count of patients in the room
+            SELECT @current_count = COUNT(*)
+            FROM Patient_Room
+            WHERE RoomID = @RoomID;
 
-           -- Get the room's capacity
-           SELECT @room_capacity = capacity
-           FROM Room
-           WHERE RoomID = @RoomID;
+            -- Get the room's capacity
+            SELECT @room_capacity = capacity
+            FROM Room
+            WHERE RoomID = @RoomID;
 
-           IF @current_count <= @room_capacity
-           BEGIN
-              -- Make the room available
-              UPDATE Room
-              SET Availability = 'AVAILABLE'
-              WHERE RoomID = @RoomID;
-           END
+            -- If the current count is less than the room's capacity, make the room available
+            IF @current_count < @room_capacity
+            BEGIN
+                -- Make the room available
+                UPDATE Room
+                SET Availability = 'AVAILABLE'
+                WHERE RoomID = @RoomID;
+            END
 
-           -- Remove the patient from the room
-           DELETE FROM Patient_Room WHERE patientID = @patientID;
+            -- Remove the patient from the room
+            DELETE FROM Patient_Room WHERE patientID = @patientID;
         END
-        -- delete the appointment if canceled an appointment
         ELSE
         BEGIN
+            -- Delete the appointment if no room is assigned to the patient
             DELETE FROM Appointment_Patient_Doc WHERE patientID = @patientID;
         END
 
         -- Delete the patient
         DELETE FROM Patient WHERE patientID = @patientID;
 
-        -- success message
+        -- Success message
         SET @ResultMessage = 'Patient and related records deleted successfully.';
     END
     ELSE
     BEGIN
-        -- failure message
+        -- Failure message
         SET @ResultMessage = 'Patient not found.';
     END
 END;
