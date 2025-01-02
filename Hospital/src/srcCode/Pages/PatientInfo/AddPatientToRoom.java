@@ -175,7 +175,7 @@ public class AddPatientToRoom extends InsertingDataPage {
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Enter Correct number", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Patient not added :( " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Patient not added room is full ", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         clearFields();

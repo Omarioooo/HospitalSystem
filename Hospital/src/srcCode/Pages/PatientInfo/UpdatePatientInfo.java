@@ -25,7 +25,6 @@ public class UpdatePatientInfo extends ManipulatePatientInfoPage {
 
     private void updatePatient() {
         dataBaseOperations = new DBOperations(connection);
-        connection.Connect();
 
         int patient_ID;
         String firstNameUpdated = "";
@@ -77,7 +76,6 @@ public class UpdatePatientInfo extends ManipulatePatientInfoPage {
 
     }
 
-
     // An inner class to handel the events
     private final class ButtonHandler implements ActionListener {
         @Override
@@ -88,4 +86,5 @@ public class UpdatePatientInfo extends ManipulatePatientInfoPage {
         }
 
     }
+
 }

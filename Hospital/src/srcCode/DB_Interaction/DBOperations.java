@@ -267,7 +267,7 @@ public class DBOperations {
     // A method to show nurse info
     public ResultSet showNurseInfo() {
         String queryForDepInfo = "EXEC nurse_info";
-        ResultSet rs = null;
+        ResultSet rs;
 
         PreparedStatement stmt = null;
         try {
@@ -298,7 +298,6 @@ public class DBOperations {
         stmt.registerOutParameter(11, Types.INTEGER); // Remaining Time
 
     }
-
 
     private void prepareDataForClinic(CallableStatement stmt) throws SQLException {
         // Register output parameters for the Clinic procedure
@@ -339,7 +338,6 @@ public class DBOperations {
         list.add("Appointment " + stmt.getInt(10)); // Appointment ID
         list.add("" + stmt.getDate(11)); // Starting Date
     }
-
 
     // A method to check the login info
     public boolean logInCheck(String name, int id) throws SQLException {

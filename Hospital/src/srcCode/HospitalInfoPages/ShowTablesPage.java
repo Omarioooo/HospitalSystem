@@ -15,8 +15,8 @@ import java.util.Vector;
 public abstract class ShowTablesPage extends JPanel {
 
     private JTable depInfoTable;
-    private final DBConnection connection;
     private ResultSet resultSet;
+    private final DBConnection connection;
     private DBOperations showInfoOperation;
 
     public ShowTablesPage(DBConnection connection, String page) {

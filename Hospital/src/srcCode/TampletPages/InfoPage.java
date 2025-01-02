@@ -51,7 +51,6 @@ public abstract class InfoPage extends JFrame implements FrameLocation, Componen
         return pnl;
     }
 
-
 }
 
 

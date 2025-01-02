@@ -68,4 +68,5 @@ public class RemovePatient extends ManipulatePatientInfoPage {
             }
         }
     }
+
 }

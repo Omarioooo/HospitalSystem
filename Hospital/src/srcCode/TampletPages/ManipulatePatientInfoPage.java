@@ -15,9 +15,6 @@ public abstract class ManipulatePatientInfoPage extends ExtractingDataPage {
         info = createTextField(590, 230);
         info.setFocusable(false);
 
-        whiteFields();
-        openFields();
-
 
         search = createButton(425, "SEARCH");
         search.addActionListener(new ButtonHandler());
@@ -58,6 +55,8 @@ public abstract class ManipulatePatientInfoPage extends ExtractingDataPage {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == search) {
                 searchPatient();
+                whiteFields();
+                openFields();
 
             } else if (e.getSource() == clear) {
                 clearFields();

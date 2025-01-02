@@ -140,7 +140,6 @@ public abstract class ExtractingDataPage extends MainTemplatePage {
         this.secondName.setText("");
         this.thirdName.setText("");
         this.phoneField.setText("");
-        this.startingDate.setText("");
         this.city.setText("");
         this.department.setText("");
         this.placeData.setText("");
