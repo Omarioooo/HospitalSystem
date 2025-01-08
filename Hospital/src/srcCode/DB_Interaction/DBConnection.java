@@ -21,7 +21,6 @@ public class DBConnection {
     public SQLServerDataSource myDriver() {
         SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
         Properties properties = new Properties();
-        FileInputStream Info;
         try (FileInputStream info = new FileInputStream("D:\\SQL_SERVER.txt")) {
             properties.load(info);
             sqlServerDataSource.setURL(properties.getProperty("URL"));
