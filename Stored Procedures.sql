@@ -461,3 +461,26 @@ BEGIN
         SET @ResultMessage = 'Patient not found.';
     END
 END;
+-----------------------------------------------------------------------------------------------------
+CREATE PROCEDURE get_all_patients
+AS
+BEGIN
+    SELECT 
+        p.PatientID, 
+        p.FirstName, 
+        p.SecondName,
+        
+        -- Department name (if found through Room → Department)
+        d.DepName,
+        
+        -- State: Room or Clinic
+        CASE 
+            WHEN pr.PatientID IS NOT NULL THEN 'Room'
+            ELSE 'Clinic'
+        END AS [State]
+
+    FROM Patient p
+    LEFT JOIN Patient_Room pr ON p.PatientID = pr.PatientID
+    LEFT JOIN Room r ON pr.RoomID = r.RoomID
+    LEFT JOIN Department d ON r.DepID = d.DepID
+END;
