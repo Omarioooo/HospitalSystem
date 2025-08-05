@@ -484,3 +484,23 @@ BEGIN
     LEFT JOIN Room r ON pr.RoomID = r.RoomID
     LEFT JOIN Department d ON r.DepID = d.DepID
 END;
+------------------------------------------------------------------------------------------------
+CREATE PROCEDURE login_check
+   @Name VARCHAR(50),
+   @ID INT,
+   @Message VARCHAR(20) OUTPUT
+AS
+BEGIN
+    SET @Message = 'Field';
+
+    IF EXISTS (
+        SELECT 1
+        FROM Employee
+        WHERE empID = @ID
+          AND (ISNULL(FirstName, '') + ' ' + ISNULL(SecondName, '')) = @Name
+          AND Emp_Rule LIKE '%Officer'
+    )
+    BEGIN
+        SET @Message = 'Ok';
+    END
+END
