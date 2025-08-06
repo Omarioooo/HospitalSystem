@@ -504,3 +504,10 @@ BEGIN
         SET @Message = 'Ok';
     END
 END
+--------------------------------------------------------------------------------------------
+CREATE PROCEDURE NumOfNurses
+    @total INT OUTPUT
+AS
+BEGIN
+    SELECT @total = COUNT(*) FROM Nurse;
+END;
