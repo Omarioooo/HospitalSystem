@@ -462,6 +462,7 @@ BEGIN
     END
 END;
 -----------------------------------------------------------------------------------------------------
+-- Return all patients on the system
 CREATE PROCEDURE get_all_patients
 AS
 BEGIN
@@ -485,6 +486,7 @@ BEGIN
     LEFT JOIN Department d ON r.DepID = d.DepID
 END;
 ------------------------------------------------------------------------------------------------
+-- Check if allowed to login (only officers can login) 
 CREATE PROCEDURE login_check
    @Name VARCHAR(50),
    @ID INT,
@@ -503,11 +505,40 @@ BEGIN
     BEGIN
         SET @Message = 'Ok';
     END
-END
---------------------------------------------------------------------------------------------
-CREATE PROCEDURE NumOfNurses
-    @total INT OUTPUT
+END;
+------------------------------------------------------------------------------------------
+-- Get total number of patients	    
+CREATE PROCEDURE NumOfPatients
 AS
 BEGIN
-    SELECT @total = COUNT(*) FROM Nurse;
+    SELECT COUNT(*) FROM Patient;
+END;
+------------------------------------------------------------------------------------------	    
+-- Get the total number of Nurses	    
+CREATE PROCEDURE NumOfNurses
+AS
+BEGIN
+    SELECT COUNT(*) FROM Nurse;
+END;
+---------------------------------------------------------------------------------------
+-- Get the total number of appointments
+CREATE PROCEDURE total_appointments
+AS
+BEGIN
+SELECT COUNT(AppoID) FROM Appointment
+END;
+----------------------------------------------------------------------------------------
+-- Get the total number of free beds
+CREATE PROCEDURE totalNumberOfAvailableBeds
+AS
+BEGIN
+SELECT SUM(AvailableBeds) AS TotalAvailableBeds
+FROM (
+    SELECT 
+        r.RoomID,
+        r.Capacity - COUNT(pr.PatientID) AS AvailableBeds
+    FROM Room r
+    LEFT JOIN Patient_Room pr ON r.RoomID = pr.RoomID
+    GROUP BY r.RoomID, r.Capacity
+) AS RoomAvailability;
 END;
